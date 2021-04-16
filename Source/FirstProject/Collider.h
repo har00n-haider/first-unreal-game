@@ -42,7 +42,11 @@ public:
 	UPROPERTY(VisibleAnywhere, Category ="Mesh")
 	class USpringArmComponent* SpringArm;
 
+	// UPROPERTY elements are garbage collected by Unreal Engine
+	UPROPERTY(VisibleAnywhere, Category="Movement")
+	class UColliderMovementComponent* OurMovementComponent;
 
+	virtual UPawnMovementComponent* GetMovementComponent() const override;
 
 private:
 	void MoveForward(float input);

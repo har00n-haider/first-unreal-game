@@ -5,20 +5,22 @@
 #include "Components/SphereComponent.h"
 #include "GameFrameWork/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "ColliderMovementComponent.h"
 
 // Sets default values
 ACollider::ACollider()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	PrimaryActorTick.bCanEverTick = true;                                  
 
 	// Loading a sphere component
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->SetupAttachment(RootComponent);
 	SphereComponent->InitSphereRadius(40.f);
 	SphereComponent->SetCollisionProfileName(TEXT("Pawn"));
+
+	// Set the root component
+	SetRootComponent(SphereComponent);
 
 	// Loading the mesh component
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
@@ -46,6 +48,10 @@ ACollider::ACollider()
 	// Setting up camera for the pawn
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+
+	// Custom movement component
+	OurMovementComponent = CreateDefaultSubobject<UColliderMovementComponent>(TEXT("OurMovementComponent"));
+	OurMovementComponent->UpdatedComponent = RootComponent;
 }
 
 // Called when the game starts or when spawned
@@ -73,11 +79,22 @@ void ACollider::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void ACollider::MoveRight(float input)
 {
 	FVector Right = GetActorRightVector();
-	AddMovementInput(Right * input);
+	if(OurMovementComponent)
+	{
+		OurMovementComponent->AddInputVector(Right * input);
+	}
 }
 
 void ACollider::MoveForward(float input)
 {
 	FVector Forward = GetActorForwardVector();
-	AddMovementInput(Forward * input);
+	if (OurMovementComponent)
+	{
+		OurMovementComponent->AddInputVector(Forward * input);
+	}
+}
+
+UPawnMovementComponent* ACollider::GetMovementComponent() const
+{
+	return OurMovementComponent;
 }
