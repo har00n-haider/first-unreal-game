@@ -52,6 +52,8 @@ ACollider::ACollider()
 	// Custom movement component
 	OurMovementComponent = CreateDefaultSubobject<UColliderMovementComponent>(TEXT("OurMovementComponent"));
 	OurMovementComponent->UpdatedComponent = RootComponent;
+
+	CameraInput = FVector2D(0.f, 0.f);
 }
 
 // Called when the game starts or when spawned
@@ -65,15 +67,26 @@ void ACollider::BeginPlay()
 void ACollider::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	FRotator NewRotation = GetActorRotation();
+	NewRotation.Yaw += CameraInput.X;
+	SetActorRotation(NewRotation);
 
+	FRotator NewSpringArmRotation = SpringArm->GetComponentRotation();
+	NewSpringArmRotation.Pitch = FMath::Clamp(NewSpringArmRotation.Pitch += CameraInput.Y, -80.f, -15.f);
+	SpringArm->SetWorldRotation(NewSpringArmRotation);
 }
 
 // Called to bind functionality to input
 void ACollider::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	// TODO: Compare how this was done in the 3rd person tutorial here:
+	// https://www.youtube.com/watch?v=hRO82u1phyw&list=PLfQ3pODBwOcaV1TdnqNWLTJ4wiUzEvXis&ab_channel=UnrealEngine
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ACollider::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ACollider::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("CameraPitch"), this, &ACollider::PitchCamera);
+	PlayerInputComponent->BindAxis(TEXT("CameraYaw"), this, &ACollider::YawCamera);
 }
 
 void ACollider::MoveRight(float input)
@@ -92,6 +105,16 @@ void ACollider::MoveForward(float input)
 	{
 		OurMovementComponent->AddInputVector(Forward * input);
 	}
+}
+
+void ACollider::YawCamera(float AxisValue)
+{
+	CameraInput.X = AxisValue;
+}
+
+void ACollider::PitchCamera(float AxisValue)
+{
+	CameraInput.Y = AxisValue;
 }
 
 UPawnMovementComponent* ACollider::GetMovementComponent() const
