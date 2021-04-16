@@ -15,7 +15,7 @@ ACritter::ACritter()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 
 	// mesh
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
+	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComponent"));
 	MeshComponent->SetupAttachment(GetRootComponent());
 
 	// camera
@@ -24,8 +24,8 @@ ACritter::ACritter()
 	Camera->SetRelativeLocation(FVector(-300.f, 0.f, 300.f));
 	Camera->SetRelativeRotation(FRotator(-45.f, 0.f, 0.f));
 
-	// can also be done from the editor? overides this default
-	AutoPossessPlayer = EAutoReceiveInput::Player0;
+	// NOTE: can also be done from the editor? overides this default
+	//AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	CurrentVelocity = FVector(0.f);
 	MaxSpeed = 100.f;
