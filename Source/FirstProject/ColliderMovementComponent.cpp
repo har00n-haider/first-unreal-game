@@ -13,11 +13,6 @@ void UColliderMovementComponent::TickComponent(float DeltaTime, enum ELevelTick 
 	}
 
 	FVector DesiredMovementThisFrame = ConsumeInputVector() * DeltaTime * Speed;
-	UE_LOG(LogTemp, Warning, TEXT("%f, %f, %f"), 
-		DesiredMovementThisFrame.X,
-		DesiredMovementThisFrame.Y,
-		DesiredMovementThisFrame.Z
-	);
 
 	if(!DesiredMovementThisFrame.IsNearlyZero())
 	{
