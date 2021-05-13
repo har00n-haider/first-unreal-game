@@ -85,8 +85,8 @@ void ACollider::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &ACollider::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &ACollider::MoveRight);
-	PlayerInputComponent->BindAxis(TEXT("CameraPitch"), this, &ACollider::PitchCamera);
-	PlayerInputComponent->BindAxis(TEXT("CameraYaw"), this, &ACollider::YawCamera);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &ACollider::PitchCamera);
+	PlayerInputComponent->BindAxis(TEXT("Turn"), this, &ACollider::YawCamera);
 }
 
 void ACollider::MoveRight(float input)
@@ -109,12 +109,12 @@ void ACollider::MoveForward(float input)
 
 void ACollider::YawCamera(float AxisValue)
 {
-	CameraInput.X = AxisValue;
+	CameraInput.Y = AxisValue;
 }
 
 void ACollider::PitchCamera(float AxisValue)
 {
-	CameraInput.Y = AxisValue;
+	CameraInput.X = AxisValue;
 }
 
 UPawnMovementComponent* ACollider::GetMovementComponent() const
