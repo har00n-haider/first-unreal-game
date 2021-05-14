@@ -39,23 +39,42 @@ void AFloorSwitch::BeginPlay()
 	TriggerBox->OnComponentBeginOverlap.AddDynamic(this, &AFloorSwitch::OnOverlapBegin);
 	TriggerBox->OnComponentEndOverlap.AddDynamic(this, &AFloorSwitch::OnOverlapEnd);
 
+	InitialDoorLocation = Door->GetComponentLocation();
+	InitialSwitchLocation = FloorSwitch->GetComponentLocation();
+
 }
 
 // Called every frame
 void AFloorSwitch::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AFloorSwitch::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap begin"));
+	RaiseDoor();
+	LowerFloorSwitch();
 }
 
 void AFloorSwitch::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Overlap end"));
+	LowerDoor();
+	RaiseFloorSwitch();
 }
 
+void AFloorSwitch::UpdateDoorLocation(float z)
+{
+	FVector NewLocation = InitialDoorLocation;
+	NewLocation.Z += z;
+	Door->SetWorldLocation(NewLocation);
+}
+
+void AFloorSwitch::UpdateFloorSwitchLocation(float z)
+{
+	FVector NewLocation = InitialSwitchLocation;
+	NewLocation.Z += z;
+	FloorSwitch->SetWorldLocation(NewLocation);
+}
 
