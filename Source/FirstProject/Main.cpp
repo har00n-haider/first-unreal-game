@@ -57,7 +57,6 @@ void AMain::Tick(float DeltaTime)
 
 	FVector Speed = GetVelocity();
 	FVector LateralSpeed = FVector(Speed.X, Speed.Y, 0.f);
-	UE_LOG(LogTemp, Log, TEXT("What the fuck %f"), LateralSpeed.Size());
 }
 
 // Called to bind functionality to input
